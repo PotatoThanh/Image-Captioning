@@ -11,9 +11,9 @@ def InceptionV3(trainable=False):
 
     return image_features_extract_model
 
-def NASMobile(trainable=False):
-    image_model = tf.keras.applications.InceptionV3(include_top=False,
-                                                weights='imagenet')
+def MobileNetV2(trainable=False):
+    image_model = keras.applications.mobilenet_v2.MobileNetV2(input_shape=None,
+                                                include_top=False, weights='imagenet')                                              
     new_input = image_model.input
     hidden_layer = image_model.layers[-1].output
 
