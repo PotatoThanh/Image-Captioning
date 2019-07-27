@@ -130,7 +130,7 @@ def train(DATA_DIR='.', RESULT_DIR='.'):
                                                             batch, 
                                                             loss.numpy() / int(target.shape[1])))
         
-        if epoch % 1 ==0:
+        if epoch % 10 ==0:
             ckpt_manager.save()
 
             plt.plot(loss_plot)
