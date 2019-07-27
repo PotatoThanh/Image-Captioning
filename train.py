@@ -27,13 +27,13 @@ def train(DATA_DIR='.', RESULT_DIR='.'):
         annotation_file, data_path)
     print('number of captions:' + str(len(all_captions)))
 
-    num_examples = 20
-    all_captions = all_captions[:num_examples]
-    all_img_name_vector = all_img_name_vector[:num_examples]
+    # num_examples = 20
+    # all_captions = all_captions[:num_examples]
+    # all_img_name_vector = all_img_name_vector[:num_examples]
 
     # Tokenzing
     all_captions, max_length, tokenizer = data_processing.data_tokenizer(
-        all_captions, top_k=50000)
+        all_captions, top_k=100000)
 
     # Save tockenizer for evaluation part
     save_json = os.path.join(RESULT_DIR, 'tokenizer.pickle')
@@ -62,7 +62,7 @@ def train(DATA_DIR='.', RESULT_DIR='.'):
 
 
     # Define optimization method
-    optimizer = tf.train.AdamOptimizer()
+    optimizer = tf.train.AdamOptimizer(config.lr)
 
     # Defince decoder and encoder
     encoder = my_nets.CNN_Encoder(embedding_dim)
