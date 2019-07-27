@@ -33,13 +33,13 @@ def train(DATA_DIR='.', RESULT_DIR='.'):
 
     # Tokenzing
     all_captions, max_length, tokenizer = data_processing.data_tokenizer(
-        all_captions, top_k=100000)
+        all_captions, top_k=10000)
 
     # Save tockenizer for evaluation part
     save_json = os.path.join(RESULT_DIR, 'tokenizer.pickle')
     with open(save_json, 'wb') as handle:
         pickle.dump(tokenizer, handle)
-
+    
     # Shuffle dataset
     all_captions, all_img_name_vector = data_processing.data_shuffle(
         all_captions, all_img_name_vector)
@@ -119,13 +119,13 @@ def train(DATA_DIR='.', RESULT_DIR='.'):
             
             total_loss += (loss / int(target.shape[1]))
             
-            variables = encoder.variables + decoder.variables
+            variables = encoder.trainable_variables + decoder.trainable_variables
             
             gradients = tape.gradient(loss, variables) 
             
             optimizer.apply_gradients(zip(gradients, variables), tf.train.get_or_create_global_step())
             
-            if batch % 100 == 0:
+            if batch % 10 == 0:
                 print ('Epoch {} Batch {} Loss {:.4f}'.format(epoch + 1, 
                                                             batch, 
                                                             loss.numpy() / int(target.shape[1])))
@@ -133,18 +133,20 @@ def train(DATA_DIR='.', RESULT_DIR='.'):
         if epoch % 10 ==0:
             ckpt_manager.save()
 
-            plt.plot(loss_plot)
-            plt.xlabel('Epochs')
-            plt.ylabel('Loss')
-            plt.title('Loss Plot')
-            fig_name = checkpoint_prefix + '/loss.png'
-            plt.savefig(fig_name)
         # storing the epoch end loss value to plot later
         loss_plot.append(total_loss / len(cap_train))
         
         print ('Epoch {} Loss {:.6f}'.format(epoch + 1, 
                                             total_loss/len(cap_train)))
         print ('Time taken for 1 epoch {} sec\n'.format(time.time() - start))
+        
+        # save loss figure
+        plt.plot(loss_plot)
+        plt.xlabel('Epochs')
+        plt.ylabel('Loss')
+        plt.title('Loss Plot')
+        fig_name = checkpoint_prefix + '/loss.png'
+        plt.savefig(fig_name)
 
 # This is the entry point of this module:
 if __name__ == '__main__':
