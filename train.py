@@ -27,9 +27,9 @@ def train(DATA_DIR='.', RESULT_DIR='.'):
         annotation_file, data_path)
     print('number of captions:' + str(len(all_captions)))
 
-    # num_examples = 10
-    # all_captions = all_captions[:num_examples]
-    # all_img_name_vector = all_img_name_vector[:num_examples]
+    num_examples = 20
+    all_captions = all_captions[:num_examples]
+    all_img_name_vector = all_img_name_vector[:num_examples]
 
     # Tokenzing
     all_captions, max_length, tokenizer = data_processing.data_tokenizer(
@@ -76,8 +76,7 @@ def train(DATA_DIR='.', RESULT_DIR='.'):
     tf.gfile.MkDir(checkpoint_prefix)
     ckpt = tf.train.Checkpoint(encoder=encoder,
                             decoder=decoder,
-                            optimizer=optimizer,
-                            optimizer_step=tf.train.get_or_create_global_step())
+                            optimizer=optimizer)
     ckpt_manager = tf.contrib.checkpoint.CheckpointManager(ckpt, checkpoint_prefix, max_to_keep=10)
 
     # Start current training
@@ -149,7 +148,7 @@ def train(DATA_DIR='.', RESULT_DIR='.'):
 
 # This is the entry point of this module:
 if __name__ == '__main__':
-    # train()
+    train()
     print("START")
     print("Function call: " + str(sys.argv))
 
