@@ -3,7 +3,7 @@ from __future__ import absolute_import, division, print_function, unicode_litera
 import tensorflow as tf
 tf.enable_eager_execution()
 
-from model import my_nets, losses, inceptionv3
+from model import my_nets, losses
 from utils import data_processing, parallel_data_loading
 import config
 import pickle

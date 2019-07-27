@@ -7,7 +7,7 @@
 * The RNN (here GRU) attends over the image to predict the next word.
 """
 import tensorflow as tf
-from model.inceptionv3 import feature_extractor
+from model.feature_extraction import feature_extractor
 
 class BahdanauAttention(tf.keras.Model):
     def __init__(self, units):
