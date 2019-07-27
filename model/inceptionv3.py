@@ -10,3 +10,7 @@ def InceptionV3(trainable=False):
     image_features_extract_model.trainable = trainable
 
     return image_features_extract_model
+
+def feature_extractor(model_type='inceptionv3', trainable=False):
+    if model_type == 'inceptionv3':
+        return InceptionV3(trainable=trainable)

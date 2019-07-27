@@ -7,7 +7,7 @@
 * The RNN (here GRU) attends over the image to predict the next word.
 """
 import tensorflow as tf
-from model.inceptionv3 import InceptionV3
+from model.inceptionv3 import feature_extractor
 
 class BahdanauAttention(tf.keras.Model):
     def __init__(self, units):
@@ -42,12 +42,12 @@ class CNN_Encoder(tf.keras.Model):
         # This encoder passes those features through a Fully connected layer
     def __init__(self, embedding_dim):
         super(CNN_Encoder, self).__init__()
-        self.inceptionv3 = InceptionV3(trainable=False)
+        self.cnn_model = feature_extractor(model_type='inceptionv3', trainable=False)
         # shape after fc == (batch_size, 64, embedding_dim)
         self.fc = tf.keras.layers.Dense(embedding_dim)
 
     def call(self, x):
-        x = self.inceptionv3(x)
+        x = self.cnn_model(x)
         x = tf.reshape(x, (x.shape[0], -1, x.shape[3]))
         x = self.fc(x)
         x = tf.nn.relu(x)
