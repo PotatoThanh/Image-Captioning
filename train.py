@@ -102,7 +102,8 @@ def train(DATA_DIR='.', RESULT_DIR='.'):
             # initializing the hidden state for each batch
             # because the captions are not related from image to image
             hidden = decoder.reset_state(batch_size=target.shape[0])
-            if tf.shape(target)[0] == BATCH_SIZE:
+            
+            if target.shape[0] == BATCH_SIZE:
 
                 dec_input = tf.expand_dims([tokenizer.word_index['<start>']] * BATCH_SIZE, 1)
                 
