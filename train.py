@@ -102,7 +102,7 @@ def train(DATA_DIR='.', RESULT_DIR='.'):
             # initializing the hidden state for each batch
             # because the captions are not related from image to image
             hidden = decoder.reset_state(batch_size=target.shape[0])
-            
+
             if target.shape[0] == BATCH_SIZE:
 
                 dec_input = tf.expand_dims([tokenizer.word_index['<start>']] * BATCH_SIZE, 1)
@@ -127,7 +127,7 @@ def train(DATA_DIR='.', RESULT_DIR='.'):
                 
                 optimizer.apply_gradients(zip(gradients, variables), tf.train.get_or_create_global_step())
                 
-                if batch % 10 == 0:
+                if batch % 100 == 0:
                     print ('Epoch {} Batch {} Loss {:.4f}'.format(epoch + 1, 
                                                                 batch, 
                                                                 loss.numpy() / int(target.shape[1])))

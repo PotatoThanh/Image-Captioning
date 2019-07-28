@@ -3,8 +3,8 @@
 BATCH_SIZE = 16
 EPOCHS=300
 BUFFER_SIZE = 1000 #maximum buffer
-embedding_dim = 512 # word embedding
-units = 1024 #gru units
+embedding_dim = 256 # word embedding
+units = 512 #gru units
 lr = 1e-3
 # shape of the vector extracted from InceptionV3 is (64, 2048)
 # these two variables represent that
