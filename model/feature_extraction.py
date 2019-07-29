@@ -21,7 +21,20 @@ def MobileNetV2(trainable=False):
     image_features_extract_model.trainable = trainable
 
     return image_features_extract_model
-
-def feature_extractor(model_type='inceptionv3', trainable=False):
+def simpleCNN(trainable=True):
+    img = tf.keras.layers.Input(shape=(299, 299, 3))
+    x = tf.keras.layers.Conv2D(filters=10, kernel_size=3, strides=2, activation='relu', padding='same')(img)
+    x = tf.keras.layers.Conv2D(filters=10, kernel_size=3, strides=2, activation='relu', padding='same')(x)
+    x = tf.keras.layers.Conv2D(filters=10, kernel_size=3, strides=2, activation='relu', padding='same')(x)
+    x = tf.keras.layers.Conv2D(filters=10, kernel_size=3, strides=2, activation='relu', padding='same')(x)
+    x = tf.keras.layers.Conv2D(filters=10, kernel_size=3, strides=2, activation='relu', padding='same')(x)
+    x = tf.keras.layers.Conv2D(filters=10, kernel_size=3, strides=2, activation='relu', padding='same')(x)
+    model = tf.keras.Model(inputs=[img],outputs=[x])
+    model.trainable=trainable
+    return model
+def feature_extractor(model_type='simple', trainable=False):
     if model_type == 'inceptionv3':
         return InceptionV3(trainable=trainable)
+
+    elif model_type == 'simple':
+        return simpleCNN(trainable=trainable)

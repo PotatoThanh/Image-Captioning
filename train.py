@@ -103,35 +103,33 @@ def train(DATA_DIR='.', RESULT_DIR='.'):
             # because the captions are not related from image to image
             hidden = decoder.reset_state(batch_size=target.shape[0])
 
-            if target.shape[0] == BATCH_SIZE:
-
-                dec_input = tf.expand_dims([tokenizer.word_index['<start>']] * BATCH_SIZE, 1)
+            dec_input = tf.expand_dims([tokenizer.word_index['<start>']] * target.shape[0], 1)
+            
+            with tf.GradientTape() as tape:
+                features = encoder(img_tensor)
                 
-                with tf.GradientTape() as tape:
-                    features = encoder(img_tensor)
+                for i in range(1, target.shape[1]):
+                    # passing the features through the decoder
+                    predictions, hidden, _ = decoder(dec_input, features, hidden)
+
+                    loss += losses.loss_function(target[:, i], predictions)
                     
-                    for i in range(1, target.shape[1]):
-                        # passing the features through the decoder
-                        predictions, hidden, _ = decoder(dec_input, features, hidden)
-
-                        loss += losses.loss_function(target[:, i], predictions)
-                        
-                        # using teacher forcing
-                        dec_input = tf.expand_dims(target[:, i], 1)
-                
-                total_loss += (loss / int(target.shape[1]))
-                
-                variables = encoder.trainable_variables + decoder.trainable_variables
-                
-                gradients = tape.gradient(loss, variables) 
-                
-                optimizer.apply_gradients(zip(gradients, variables), tf.train.get_or_create_global_step())
-                
-                if batch % 100 == 0:
-                    print ('Epoch {} Batch {} Loss {:.4f}'.format(epoch + 1, 
-                                                                batch, 
-                                                                loss.numpy() / int(target.shape[1])))
-        
+                    # using teacher forcing
+                    dec_input = tf.expand_dims(target[:, i], 1)
+            
+            total_loss += (loss / int(target.shape[1]))
+            
+            variables = encoder.trainable_variables + decoder.trainable_variables
+            
+            gradients = tape.gradient(loss, variables) 
+            
+            optimizer.apply_gradients(zip(gradients, variables), tf.train.get_or_create_global_step())
+            
+            if batch % 100 == 0:
+                print ('Epoch {} Batch {} Loss {:.4f}'.format(epoch + 1, 
+                                                            batch, 
+                                                            loss.numpy() / int(target.shape[1])))
+    
         if epoch % 10 ==0:
             ckpt_manager.save()
 
