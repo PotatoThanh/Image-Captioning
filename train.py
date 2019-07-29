@@ -17,6 +17,8 @@ import argparse
 import os                   
 import sys
 
+os.environ["CUDA_VISIBLE_DEVICES"] = "0"
+
 def train(DATA_DIR='.', RESULT_DIR='.'):
     # Dowload data
     save_data_path = DATA_DIR
@@ -33,7 +35,7 @@ def train(DATA_DIR='.', RESULT_DIR='.'):
 
     # Tokenzing
     all_captions, max_length, tokenizer = data_processing.data_tokenizer(
-        all_captions, top_k=10000)
+        all_captions, top_k=5000)
 
     # Save tockenizer for evaluation part
     save_json = os.path.join(RESULT_DIR, 'tokenizer.pickle')
