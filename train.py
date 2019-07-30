@@ -16,6 +16,7 @@ import matplotlib.pyplot as plt
 import argparse             
 import os                   
 import sys
+import tqdm
 
 os.environ["CUDA_VISIBLE_DEVICES"] = "0"
 
@@ -98,7 +99,7 @@ def train(DATA_DIR='.', RESULT_DIR='.'):
             start = time.time()
             total_loss = 0
             
-            for (batch, (img_tensor, target)) in enumerate(dataset):
+            for (batch, (img_tensor, target)) in tqdm(enumerate(dataset)):
                 loss = 0
                 
                 # initializing the hidden state for each batch
