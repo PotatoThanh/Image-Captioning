@@ -12,7 +12,7 @@ def parallel_loading(img_name_train, cap_train, BUFFER_SIZE, BATCH_SIZE):
 
     # using map to load the numpy files in parallel
     dataset = dataset.map(lambda item1, item2: tf.py_func(
-            map_func, [item1, item2], [tf.float32, tf.int32]), num_parallel_calls=4)
+            map_func, [item1, item2], [tf.float32, tf.int32]), num_parallel_calls=8)
 
     # shuffling and batching
     dataset = dataset.shuffle(BUFFER_SIZE)

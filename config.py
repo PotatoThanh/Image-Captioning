@@ -1,6 +1,6 @@
 # Our images and captions are ready! Next, let's create a tf.data dataset to use for training our model.
 # feel free to change these parameters according to your system's configuration
-BATCH_SIZE = 1
+BATCH_SIZE = 16
 EPOCHS=300
 BUFFER_SIZE = 1000 #maximum buffer
 embedding_dim = 256 # word embedding
