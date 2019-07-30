@@ -16,7 +16,6 @@ import matplotlib.pyplot as plt
 import argparse             
 import os                   
 import sys
-import tqdm
 
 os.environ["CUDA_VISIBLE_DEVICES"] = "0"
 
@@ -94,62 +93,62 @@ def train(DATA_DIR='.', RESULT_DIR='.'):
     # adding this in a separate cell because if you run the training cell
     # many times, the loss_plot array will be reset
     loss_plot = []
-    with tf.device('gpu:0'):
-        for epoch in range(EPOCHS):
-            start = time.time()
-            total_loss = 0
-            
-            for (batch, (img_tensor, target)) in tqdm(enumerate(dataset)):
-                loss = 0
-                
-                # initializing the hidden state for each batch
-                # because the captions are not related from image to image
-                hidden = decoder.reset_state(batch_size=target.shape[0])
 
-                dec_input = tf.expand_dims([tokenizer.word_index['<start>']] * target.shape[0], 1)
-                
-                with tf.GradientTape() as tape:
-                    features = encoder(img_tensor)
-                    
-                    for i in range(1, target.shape[1]):
-                        # passing the features through the decoder
-                        predictions, hidden, _ = decoder(dec_input, features, hidden)
-
-                        loss += losses.loss_function(target[:, i], predictions)
-                        
-                        # using teacher forcing
-                        dec_input = tf.expand_dims(target[:, i], 1)
-                
-                total_loss += (loss / int(target.shape[1]))
-                
-                variables = encoder.trainable_variables + decoder.trainable_variables
-                
-                gradients = tape.gradient(loss, variables) 
-                
-                optimizer.apply_gradients(zip(gradients, variables), tf.train.get_or_create_global_step())
-                
-                if batch % 100 == 0:
-                    print ('Epoch {} Batch {} Loss {:.4f}'.format(epoch + 1, 
-                                                                batch, 
-                                                                loss.numpy() / int(target.shape[1])))
+    for epoch in range(EPOCHS):
+        start = time.time()
+        total_loss = 0
         
-            if epoch % 10 ==0:
-                ckpt_manager.save()
+        for (batch, (img_tensor, target)) in enumerate(dataset):
+            loss = 0
+            
+            # initializing the hidden state for each batch
+            # because the captions are not related from image to image
+            hidden = decoder.reset_state(batch_size=target.shape[0])
 
-            # storing the epoch end loss value to plot later
-            loss_plot.append(total_loss / len(cap_train))
+            dec_input = tf.expand_dims([tokenizer.word_index['<start>']] * target.shape[0], 1)
             
-            print ('Epoch {} Loss {:.6f}'.format(epoch + 1, 
-                                                total_loss/len(cap_train)))
-            print ('Time taken for 1 epoch {} sec\n'.format(time.time() - start))
+            with tf.GradientTape() as tape:
+                features = encoder(img_tensor)
+                
+                for i in range(1, target.shape[1]):
+                    # passing the features through the decoder
+                    predictions, hidden, _ = decoder(dec_input, features, hidden)
+
+                    loss += losses.loss_function(target[:, i], predictions)
+                    
+                    # using teacher forcing
+                    dec_input = tf.expand_dims(target[:, i], 1)
             
-            # save loss figure
-            plt.plot(loss_plot)
-            plt.xlabel('Epochs')
-            plt.ylabel('Loss')
-            plt.title('Loss Plot')
-            fig_name = checkpoint_prefix + '/loss.png'
-            plt.savefig(fig_name)
+            total_loss += (loss / int(target.shape[1]))
+            
+            variables = encoder.trainable_variables + decoder.trainable_variables
+            
+            gradients = tape.gradient(loss, variables) 
+            
+            optimizer.apply_gradients(zip(gradients, variables), tf.train.get_or_create_global_step())
+            
+            if batch % 100 == 0:
+                print ('Epoch {} Batch {} Loss {:.4f}'.format(epoch + 1, 
+                                                            batch, 
+                                                            loss.numpy() / int(target.shape[1])))
+    
+        if epoch % 10 ==0:
+            ckpt_manager.save()
+
+        # storing the epoch end loss value to plot later
+        loss_plot.append(total_loss / len(cap_train))
+        
+        print ('Epoch {} Loss {:.6f}'.format(epoch + 1, 
+                                            total_loss/len(cap_train)))
+        print ('Time taken for 1 epoch {} sec\n'.format(time.time() - start))
+        
+        # save loss figure
+        plt.plot(loss_plot)
+        plt.xlabel('Epochs')
+        plt.ylabel('Loss')
+        plt.title('Loss Plot')
+        fig_name = checkpoint_prefix + '/loss.png'
+        plt.savefig(fig_name)
 
 # This is the entry point of this module:
 if __name__ == '__main__':
