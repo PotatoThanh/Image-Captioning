@@ -8,5 +8,5 @@ units = 512 #gru units
 lr = 1e-3
 # shape of the vector extracted from InceptionV3 is (64, 2048)
 # these two variables represent that
-features_shape = 2048
-attention_features_shape = 64 
+features_shape = 10
+attention_features_shape = 10 
