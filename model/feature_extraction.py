@@ -27,6 +27,6 @@ def simpleCNN(trainable=True):
     model = tf.keras.Model(inputs=[img],outputs=[x])
     return model
 def feature_extractor():
-    return simpleCNN(trainable=trainable)
+    return simpleCNN()
 
 # simpleCNN(trainable=True)
