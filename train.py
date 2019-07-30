@@ -121,7 +121,7 @@ def train(DATA_DIR='.', RESULT_DIR='.'):
             
             total_loss += (loss / int(target.shape[1]))
             
-            variables = encoder.trainable_variables + decoder.trainable_variables
+            variables = encoder.variables + decoder.variables
             
             gradients = tape.gradient(loss, variables) 
             
